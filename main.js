@@ -3,36 +3,44 @@ $(window).load(function() {
         $(".loader").delay(1000).fadeOut("slow");;
 });
 
-function kimonoCallback(data) {
-// do something with the data
-// please make sure the scope of this function is global
-console.dir(data);
-var teams = data.results.collection1;
-var e = 1;
-var champions = 5;
 
-for (var i = 0; i < teams.length;i++) {
-    
-	if (i < champions) {
-        $('tbody').append('<tr class="champ"><td>' + e + "</td><td>" + teams[i].Teams + "</td><td>" + teams[i].Points + "</td></tr>");
-    } else if (i < teams.length - 3){
-        $('tbody').append("<tr><td>" + e + "</td><td>" + teams[i].Teams + "</td><td>" + teams[i].Points + "</td></tr>");
-    } else {
-        $('tbody').append('<tr class="rel"><td>' + e + "</td><td>" + teams[i].Teams + "</td><td>" + teams[i].Points + "</td></tr>");
-    };
-	
-	e++
-};
-
-};
 
 $.ajax({
-    "url":"https://www.kimonolabs.com/api/43ht2srk?apikey=6z6olU71YwkAuvFkfJYWdUpAcmK7Me6I&callback=kimonoCallback",
+    "url":"https://www.kimonolabs.com/api/43ht2srk?apikey=6z6olU71YwkAuvFkfJYWdUpAcmK7Me6I",
     "crossDomain":true,
-    "dataType":"jsonp"
+    "dataType":"jsonp", 
+    success: function(data) {
+        var teams = data.results.collection1;
+        var e = 1;
+        var champions = 5;
+
+        for (var i = 0; i < teams.length;i++) {
+            if (i < champions) {
+                $('#teams').append('<tr class="champ"><td>' + e + "</td><td>" + teams[i].Teams + "</td><td>" + teams[i].Points + "</td></tr>");
+            } else if (i < teams.length - 3){
+                $('#teams').append("<tr><td>" + e + "</td><td>" + teams[i].Teams + "</td><td>" + teams[i].Points + "</td></tr>");
+            } else {
+                $('#teams').append('<tr class="rel"><td>' + e + "</td><td>" + teams[i].Teams + "</td><td>" + teams[i].Points + "</td></tr>");
+            };
+            
+            e++
+        };
+    }
 });
 
-$.get("http://www.reddit.com/r/soccer/.json", function(result){
+$.ajax({
+    "url":"https://www.kimonolabs.com/api/ch017fmg?apikey=6z6olU71YwkAuvFkfJYWdUpAcmK7Me6I",
+    "crossDomain":true,
+    "dataType":"jsonp",
+    success: function(result){
+        var pop = result.results.collection1;
+        for (var i =0; i<pop.length; i++) {
+            $("#top_gs").append('<tr><td>' + pop[i].players + '</td><td>' + pop[i].team.text + '</td><td>' + pop[i].goals + '</td></tr}>');
+        }
+    }
+});
+
+$.get("http://www.reddit.com/r/soccer/.json?limit=100&after=t3_10omtd/", function(result){
     var foo = result.data.children;
     
     for (i = 0; i < foo.length; i++) {
